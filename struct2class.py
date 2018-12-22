@@ -76,7 +76,7 @@ class CStruct2Class(CWriteCppBase, CWriteBase):
 		self.write()
 
 	def is_debug(self):
-		return True
+		return False
 
 	def is_header(self):
 		return True
@@ -88,7 +88,7 @@ class CStruct2Class(CWriteCppBase, CWriteBase):
 
 	def include_sys_list(self):
 		# #include <xxx>
-		return []
+		return ["string"]
 
 	def include_other_list(self):
 		# #include "xxx"
