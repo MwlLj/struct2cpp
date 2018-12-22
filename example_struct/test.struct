@@ -1,4 +1,7 @@
 package test
 
 type CDog struct {
+    Name string
+    Age int
+    Sex string `sex`
 }
