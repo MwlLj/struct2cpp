@@ -1,7 +1,9 @@
 package test
 
 type CDog struct {
-    Name string
-    Age int
+    Name string `name`
+    Age int `age`
     Sex string `sex`
+    Hobbyies []string `hobbyies`
+    Dict map[string]string `dict`
 }

@@ -8,10 +8,9 @@ from string_tools import CStringTools
 from file_handle_re import CFileHandle
 from parse_gostruct import CGoStructParse
 from write_cpp_base import CWriteCppBase
-from write_base import CWriteBase
 
 
-class CStruct2Class(CWriteCppBase, CWriteBase):
+class CStruct2Class(CWriteCppBase):
 	def __init__(self, file_path, root="."):
 		self.m_file_handler = CFileHandle()
 		self.m_file_path = ""
@@ -42,9 +41,8 @@ class CStruct2Class(CWriteCppBase, CWriteBase):
 			param_list = struct_info.get(CGoStructParse.PARAM_LIST)
 			pls = []
 			for param in param_list:
-				param_type = param.get(CGoStructParse.PARAM_TYPE)
-				param_type = self.cpp_type_change(param_type)
-				param_name = param.get(CGoStructParse.PARAM_NAME)
+				param_type = self.__type_change(param)
+				param_name = self.__name_change(param)
 				pls.append((param_type, param_name))
 			content = ""
 			content += "public:\n"
@@ -54,9 +52,8 @@ class CStruct2Class(CWriteCppBase, CWriteBase):
 			content += "\n"
 			content += "public:\n"
 			for param in param_list:
-				param_type = param.get(CGoStructParse.PARAM_TYPE)
-				param_type = self.cpp_type_change(param_type)
-				param_name = param.get(CGoStructParse.PARAM_NAME)
+				param_type = self.__type_change(param)
+				param_name = self.__name_change(param)
 				content += "\t"
 				content += self.write_set_method(param_type, param_name)
 				content += "\n"
@@ -66,17 +63,35 @@ class CStruct2Class(CWriteCppBase, CWriteBase):
 			content += "\n"
 			content += "private:\n"
 			for param in param_list:
-				param_type = param.get(CGoStructParse.PARAM_TYPE)
-				param_type = self.cpp_type_change(param_type)
-				param_name = param.get(CGoStructParse.PARAM_NAME)
+				param_type = self.__type_change(param)
+				param_name = self.__name_change(param)
 				content += "\t"
 				content += self.write_member_var(param_type, param_name)
 				content += "\n"
 			self.m_class_implement[(self.m_namespace, struct_name)] = content
 		self.write()
 
+	def __type_change(self, param):
+		param_type = param.get(CGoStructParse.PARAM_TYPE)
+		is_list = param.get(CGoStructParse.PARAM_IS_LIST)
+		is_map = param.get(CGoStructParse.PARAM_IS_MAP)
+		map_key = param.get(CGoStructParse.PARAM_TYPE_MAP_KEY)
+		map_value = param.get(CGoStructParse.PARAM_TYPE_MAP_VALUE)
+		if is_list is True:
+			param_type = "std::vector<{0}>".format(self.type_change(param_type))
+		if is_map is True:
+			param_type = "std::map<{0}, {1}>".format(self.type_change(map_key), self.type_change(map_value))
+		return param_type
+
+	def __name_change(self, param):
+		param_name = param.get(CGoStructParse.PARAM_NAME)
+		reflex_content = param.get(CGoStructParse.REFLEX_CONTENT)
+		if reflex_content is not None:
+			param_name = reflex_content
+		return param_name
+
 	def is_debug(self):
-		return False
+		return True
 
 	def is_header(self):
 		return True
@@ -107,6 +122,33 @@ class CStruct2Class(CWriteCppBase, CWriteBase):
 
 	def namespace_implement_end(self, namespace):
 		return ""
+
+	def type_change(self, param_type):
+		if param_type == "string":
+			param_type = "std::string"
+		if param_type == "int8":
+			param_type = "char"
+		if param_type == "uint8":
+			param_type = "unsigned char"
+		if param_type == "int16":
+			param_type = "short"
+		if param_type == "uint16":
+			param_type = "unsigned short"
+		if param_type == "int32":
+			param_type = "int"
+		if param_type == "uint32":
+			param_type = "unsigned"
+		if param_type == "uint":
+			param_type = "unsigned"
+		if param_type == "int64":
+			param_type = "long long"
+		if param_type == "uint64":
+			param_type = "unsigned long long"
+		if param_type == "float32":
+			param_type = "float"
+		if param_type == "float64":
+			param_type = "double"
+		return param_type
 
 
 if __name__ == "__main__":
