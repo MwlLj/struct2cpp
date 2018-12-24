@@ -39,6 +39,7 @@ class CStruct2Class(CWriteCppBase):
 			self.m_struct_list.append(struct_name)
 			# join implement
 			param_list = struct_info.get(CGoStructParse.PARAM_LIST)
+			param_len = len(param_list)
 			pls = []
 			for param in param_list:
 				param_type = self.__type_change(param)
@@ -46,8 +47,12 @@ class CStruct2Class(CWriteCppBase):
 				pls.append((param_type, param_name))
 			content = ""
 			content += "public:\n"
-			content += "\t" + "explicit {0}()\n\t\t: {1}".format(struct_name, self.write_default_init_param_list(pls)) + " {}\n"
-			content += "\t" + "explicit {0}({1})\n\t\t: {2}".format(struct_name, self.write_construction_param_list(pls), self.write_member_init_param_list(pls)) + " {}\n"
+			if param_len > 0:
+				content += "\t" + "explicit {0}()\n\t\t: {1}".format(struct_name, self.write_default_init_param_list(pls)) + " {}\n"
+				content += "\t" + "explicit {0}({1})\n\t\t: {2}".format(struct_name, self.write_construction_param_list(pls), self.write_member_init_param_list(pls)) + " {}\n"
+			else:
+				content += "\t" + "explicit {0}()\n\t".format(struct_name) + "{}\n"
+				content += "\t" + "explicit {0}()\n\t".format(struct_name) + "{}\n"
 			content += "\t" + "virtual ~{0}()".format(struct_name) + " {}\n"
 			content += "\n"
 			content += "public:\n"
