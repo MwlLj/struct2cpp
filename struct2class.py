@@ -52,7 +52,6 @@ class CStruct2Class(CWriteCppBase):
 				content += "\t" + "explicit {0}({1})\n\t\t: {2}".format(struct_name, self.write_construction_param_list(pls), self.write_member_init_param_list(pls)) + " {}\n"
 			else:
 				content += "\t" + "explicit {0}()\n\t".format(struct_name) + "{}\n"
-				content += "\t" + "explicit {0}()\n\t".format(struct_name) + "{}\n"
 			content += "\t" + "virtual ~{0}()".format(struct_name) + " {}\n"
 			content += "\n"
 			content += "public:\n"
