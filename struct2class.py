@@ -91,7 +91,7 @@ class CStruct2Class(CWriteCppBase):
 		return param_name
 
 	def is_debug(self):
-		return True
+		return False
 
 	def is_header(self):
 		return True
