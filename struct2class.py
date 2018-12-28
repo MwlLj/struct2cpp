@@ -82,9 +82,12 @@ class CStruct2Class(CWriteCppBase):
 		map_key = param.get(CGoStructParse.PARAM_TYPE_MAP_KEY)
 		map_value = param.get(CGoStructParse.PARAM_TYPE_MAP_VALUE)
 		if is_list is True:
-			param_type = "std::vector<{0}>".format(self.type_change(param_type))
+			t, is_custom_type = self.type_change(param_type)
+			param_type = "std::vector<{0}>".format(t)
 		if is_map is True:
-			param_type = "std::map<{0}, {1}>".format(self.type_change(map_key), self.type_change(map_value))
+			t_key, is_custom_type = self.type_change(map_key)
+			t_value, is_custom_type = self.type_change(map_value)
+			param_type = "std::map<{0}, {1}>".format(t_key, t_value)
 		return param_type
 
 	def __name_change(self, param):
@@ -128,31 +131,34 @@ class CStruct2Class(CWriteCppBase):
 		return ""
 
 	def type_change(self, param_type):
+		is_custom_type = False
 		if param_type == "string":
 			param_type = "std::string"
-		if param_type == "int8":
+		elif param_type == "int8":
 			param_type = "char"
-		if param_type == "uint8":
+		elif param_type == "uint8":
 			param_type = "unsigned char"
-		if param_type == "int16":
+		elif param_type == "int16":
 			param_type = "short"
-		if param_type == "uint16":
+		elif param_type == "uint16":
 			param_type = "unsigned short"
-		if param_type == "int32":
+		elif param_type == "int32":
 			param_type = "int"
-		if param_type == "uint32":
+		elif param_type == "uint32":
 			param_type = "unsigned"
-		if param_type == "uint":
+		elif param_type == "uint":
 			param_type = "unsigned"
-		if param_type == "int64":
+		elif param_type == "int64":
 			param_type = "long long"
-		if param_type == "uint64":
+		elif param_type == "uint64":
 			param_type = "unsigned long long"
-		if param_type == "float32":
+		elif param_type == "float32":
 			param_type = "float"
-		if param_type == "float64":
+		elif param_type == "float64":
 			param_type = "double"
-		return param_type
+		else:
+			is_custom_type = True
+		return param_type, is_custom_type
 
 
 if __name__ == "__main__":
