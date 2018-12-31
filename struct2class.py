@@ -110,7 +110,7 @@ class CStruct2Class(CWriteCppBase):
 
 	def include_sys_list(self):
 		# #include <xxx>
-		return ["string"]
+		return ["string", "vector"]
 
 	def include_other_list(self):
 		# #include "xxx"
