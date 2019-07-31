@@ -64,6 +64,9 @@ class CStruct2Class(CWriteCppBase):
 				content += "\t"
 				content += self.write_get_method(param_type, param_name)
 				content += "\n"
+				content += "\t"
+				content += self.write_get_mut_method(param_type, param_name)
+				content += "\n"
 			content += "\n"
 			content += "private:\n"
 			for param in param_list:
